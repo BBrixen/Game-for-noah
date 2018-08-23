@@ -1,6 +1,11 @@
 package Main;
 
+import rendering.Assets;
 import rendering.Display;
+import states.GameState;
+import states.MenuState;
+import states.SettingsState;
+import states.State;
 
 import java.awt.*;
 import java.awt.image.BufferStrategy;
@@ -15,6 +20,11 @@ public class Game implements Runnable {//base code for game
     private BufferStrategy bufferStrategy;
     private Graphics graphics;
 
+    //states, these will be initialized in the init() method
+    private State gameState;
+    private State menuState;
+    private State settingsState;
+
     public Game(String title, int width, int height){
         this.width = width;
         this.height = height;
@@ -23,10 +33,24 @@ public class Game implements Runnable {//base code for game
 
     public void init() {
         display = new Display(title, width, height);
+        Assets.init(); //this will be used to call images for rendering
+        //access them by doing Assets.[imageName]
+
+        //initialize the states
+        gameState = new GameState();
+        menuState = new MenuState();
+        settingsState = new SettingsState();
+        //set current state
+        State.setCurrentState(gameState);//we are currently in the game state
+
     }
 
-    private void update() {
+    private void tick() {
         //where you change the value of variables
+        if (State.getCurrentState() != null) {
+            //we are in a state
+            State.getCurrentState().tick();
+        }
     }
 
     private void render() {
@@ -37,12 +61,14 @@ public class Game implements Runnable {//base code for game
         }
         graphics = bufferStrategy.getDrawGraphics();
         graphics.clearRect(0, 0, width, height);
-        //************** Draw to screen here **************//
-        //for loading image use only ImageLoader.loadImage("/res/[name].[file extension]");
-        //also, load images in the init method
-        //graphics.drawImage(image, x, y, null); will draw an image
 
-        //****************** End drawing ******************//
+        //this is where we put the drawing
+        //but we do the drawing in the specified state object's render method
+        if (State.getCurrentState() != null) {
+            //we are in a state
+            State.getCurrentState().render(graphics);
+        }
+
         bufferStrategy.show();
         graphics.dispose();
     }
@@ -72,7 +98,7 @@ public class Game implements Runnable {//base code for game
 
             if(delta >= 1) { //checks if we need to run update() and render()
                 //runs method
-                update();
+                tick();
                 render();
 
                 ticks++; //for fps counter
