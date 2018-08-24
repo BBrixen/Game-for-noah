@@ -1,22 +1,25 @@
 package Main;
 
+import Input.KeyManager;
 import rendering.Assets;
 import rendering.Display;
 import states.GameState;
 import states.MenuState;
 import states.SettingsState;
 import states.State;
-
 import java.awt.*;
 import java.awt.image.BufferStrategy;
 
 public class Game implements Runnable {//base code for game
 
+    //basic variables
+    private boolean running = false;
+
+    //graphics
     private Display display;
     private Thread thread;
     private int width, height;
-    private boolean running = false;
-    public String title;
+    private String title;
     private BufferStrategy bufferStrategy;
     private Graphics graphics;
 
@@ -25,27 +28,37 @@ public class Game implements Runnable {//base code for game
     private State menuState;
     private State settingsState;
 
+    //input
+    private KeyManager keyManager;
+
     public Game(String title, int width, int height){
         this.width = width;
         this.height = height;
         this.title = title;
+
+        //i honestly dont know why we dont initialize this in the init() method, but oh well
+        keyManager = new KeyManager();
     }
 
     public void init() {
         display = new Display(title, width, height);
+        display.getFrame().addKeyListener(keyManager);
         Assets.init(); //this will be used to call images for rendering
         //access them by doing Assets.[imageName]
 
         //initialize the states
-        gameState = new GameState();
-        menuState = new MenuState();
-        settingsState = new SettingsState();
+        //we pass 'this' as the Game for the states,
+        //this will pass this current game into the classes
+        gameState = new GameState(this);
+        menuState = new MenuState(this);
+        settingsState = new SettingsState(this);
         //set current state
         State.setCurrentState(gameState);//we are currently in the game state
 
     }
 
     private void tick() {
+        keyManager.tick();
         //where you change the value of variables
         if (State.getCurrentState() != null) {
             //we are in a state
@@ -115,13 +128,17 @@ public class Game implements Runnable {//base code for game
         stop(); //stops the thread that is running
     }
 
+    public KeyManager getKeyManager() {
+        return keyManager;
+    }
+
     public synchronized void start() {
         if (running) {
             return;
         }
 
         running = true;
-        thread = new Thread(this);
+        thread = new Thread(this);//makes a new thread for the game
         thread.start(); // thread.start calls the run() method
     }
 

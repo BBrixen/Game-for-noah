@@ -1,11 +1,13 @@
 package states;
 
+import Main.Game;
 import java.awt.*;
 
 public class MenuState extends State {
+    //this has not been finished yet
 
-    public MenuState() {
-
+    public MenuState(Game game) {
+        super(game);
     }
 
     @Override

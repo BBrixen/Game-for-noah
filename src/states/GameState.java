@@ -1,16 +1,22 @@
 package states;
 
+import Entities.Creatures.Player;
+import Main.Game;
+
 import java.awt.*;
 
 public class GameState extends State {
 
-    public GameState() {
+    private Player player;
 
+    public GameState(Game game) {
+        super(game);//this is needed, it calls the state constructor
+        player = new Player(game, 100, 100);
     }
 
     @Override
     public void tick() {
-
+        player.tick();
     }
 
     //dont worry about the @Override right here, its totally fine and necessary
@@ -24,8 +30,7 @@ public class GameState extends State {
 
         //graphics.drawImage(Assest.[imageName], x, y, null); will draw an image
 
-
-
+        player.render(graphics);
 
 
         //****************** End drawing ******************//

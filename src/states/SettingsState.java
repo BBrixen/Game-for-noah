@@ -1,11 +1,15 @@
 package states;
 
+import Main.Game;
+
 import java.awt.*;
 
 public class SettingsState extends State {
 
-    public SettingsState() {
+    //this has not been finished yet
 
+    public SettingsState(Game game) {
+        super(game);
     }
 
     @Override
