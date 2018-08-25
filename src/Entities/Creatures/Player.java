@@ -16,9 +16,16 @@ public class Player extends Creature {
 
     @Override
     public void tick() {
+
+        //this is a test push to git
+        //this is noah's test push to git
+        int x = 0;
+        int y = x+2;
+
         //i havent made pressing keys make the player move yet. ill get to it
         //to go up, you subtract from the y, to go down, you add to y. its reversed
         //but x is normal, add to x to go right, subtract from x to go left
+
 
     }
 
